@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Flex Online</title>
+	<link href="https://cdn.bootcss.com/bulma/0.4.1/css/bulma.css" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="flex.css">
+	<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css" rel="stylesheet">
+	<script src="https://cdn.bootcss.com/vue/2.3.3/vue.js"></script>
+</head>
+<body>
+<div id="app">
+
+	<div class="columns">
+		
+		<div class="column is-half">
+		
+			<div class="field is-horizontal">	
+				<div class="field-body">
+					
+					<div class="field">
+						<p class="control">
+							<p class="help is-success">选择定长还是变长</p>
+							<span class="select is-small">
+								<select v-model="fixedItem" @change="changeItem()">
+									<option :value="true">
+										使用固定宽高
+									</option>
+									<option :value="false">
+										使用随机宽高
+									</option>
+								</select>
+							</span>
+						</p>
+					</div>
+					
+					<div class="field">
+				      	<p class="control">
+					      	<p class="help is-success is-small"> 设置 item 个数</p>
+					        <input class="input is-success is-small" v-model.number="itemNum" type="number" placeholder="设置个数" @keyup="setItemId(itemNum)">
+				    	</p>
+				    </div>
+
+					 <div class="field" >
+				      <p class="control">
+				      	<p class="help is-success" v-if="fixedItem"> 设置 item 宽度 </p>
+				      	<p class="help is-success" v-if="!fixedItem"> 设置宽高最小值 </p>
+				        <input class="input is-success is-small" v-model.number="widthOrMin" type="number" @change="changeItem()">
+				      </p>
+				    </div>
+
+				     <div class="field" >
+				      <p class="control">
+				      	<p class="help is-success" v-if="fixedItem"> 设置 item 高度 </p>
+				      	<p class="help is-success" v-if="!fixedItem"> 设置宽高最大值 </p>
+				        <input class="input is-success is-small" v-model.number="heightOrMax" type="text" @change="changeItem()" >
+				      </p>
+				    </div>
+
+			
+				</div> 
+			</div>		
+
+
+			<div class="field">
+				<button class="button is-primary is-small" @click="isFlex = !isFlex">打开/关闭盒布局</button> 
+				<span v-if="isFlex" class="subtitle">display: flex;</span>
+			</div>
+
+			<div class="field">	
+				<p class="control">
+					<p class="help is-success">主轴的方向（即项目的排列方向）</p>
+					<span class="select is-small">
+						<select v-model="dirSelect">
+						  <option v-for="option in dirOptions" v-bind:value="option.value">
+						    {{ option.text }}
+						  </option>
+						</select>
+					</span>
+				</p>
+			</div>
+
+			<div class="field">	
+				<p class="control">
+					<p class="help is-success">换行</p>
+					<span class="select is-small ">
+						<select v-model="wrapSelect">
+						  <option v-for="option in wrapOptions" v-bind:value="option.value">
+						    {{ option.text }}
+						  </option>
+						</select>
+					</span>
+				</p>
+			</div>
+
+			<div class="field">	
+				<p class="control">
+					<p class="help is-success">项目在主轴上的对齐方式</p>
+					<span class="select is-small ">
+						<select v-model="justSelect">
+						  <option v-for="option in justOptions" v-bind:value="option.value">
+						    {{ option.text }}
+						  </option>
+						</select>
+					</span>
+				</p>
+			</div>
+
+			<div class="field">	
+				<p class="control">
+					<p class="help is-success"> 项目在交叉轴上如何对齐</p>
+					<span class="select is-small ">
+						<select v-model="alignSelect">
+						  <option v-for="option in alignOptions" v-bind:value="option.value">
+						    {{ option.text }}
+						  </option>
+						</select>
+					</span>
+				</p>
+			</div>
+
+			<div class="field">	
+				<p class="control">
+					<p class="help is-success"> 多根轴线的对齐方式。</p>
+					<span class="select is-small ">
+						<select v-model="alcoSelect">
+						  <option v-for="option in alcoOptions" v-bind:value="option.value">
+						    {{ option.text }}
+						  </option>
+						</select>
+					</span>
+				</p>
+			</div>
+		</div>
+		<div class="column is-half">
+			<div class="box-basic" :style="boxStyleObject()">
+				<div v-for="(item,index) in itemNum" class="item" :style="itemStyleObject(itemIds[index])">
+					<input type="number" class="iteminput" title="order" name="" v-model.number="itemIds[index].order">
+					<input type="number" class="iteminput" title="flex-grow" name="" v-model.number="itemIds[index].grow">
+					<input type="number" class="iteminput" title="flex-shrink" name="" v-model.number="itemIds[index].shrink">
+					<input type="text" class="iteminput" title="flex-basis" name="" v-model="itemIds[index].basis">
+					<input type="text" class="iteminput" title="flex-align-self" name="" v-model="itemIds[index].self">
+				</div >
+				
+			</div>
+		</div>
+	</div>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <div class="content has-text-centered">
+      <p>
+        <strong>Zen Flex Online</strong> by <a href="http://www.huangmingxian.me">Zen</a>. The source code is licensed
+        <a href="http://opensource.org/licenses/mit-license.php">MIT</a>.
+      </p>
+      <p>
+        <a class="icon" href="https://github.com/ihuangmx">
+          <i class="fa fa-github"></i>
+        </a>
+      </p>
+    </div>
+  </div>
+</footer>
+<script src="app.js"></script>
+</body>
+</html>
